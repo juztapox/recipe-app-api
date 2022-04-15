@@ -1,12 +1,13 @@
 FROM python:3.7-alpine
 
 ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
 
 # Install deps
 # Install postgress
 RUN apk add --update --no-cache postgresql-client
 # Install temporary deps needed to install
-RUN apk add --update --no-cache --virtual .tmp-build-deps gcc libc-dev linux-headers postgresql-dev
+RUN apk add --update --no-cache --virtual .tmp-build-deps gcc libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev
 # Instal from requirements
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt

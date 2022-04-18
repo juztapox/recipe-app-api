@@ -256,6 +256,16 @@ class RecipeImageUploadTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
+
+class RecipeFilteringTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            'test@cmercado.com', 'testpass'
+        )
+        self.client.force_authenticate(user=self.user)
+        self.recipe = sample_recipe(user=self.user)
+
     def test_filter_recipes_by_tags(self):
         """
         Test returning recipes with specific tags

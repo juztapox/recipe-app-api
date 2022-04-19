@@ -4,11 +4,10 @@ import os
 from PIL import Image
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.urls import reverse
 
 from rest_framework import status
-from rest_framework.test import APIClient
+from rest_framework.test import APITestCase
 
 from core.models import Recipe, Tag, Ingredient
 
@@ -46,11 +45,8 @@ def sample_recipe(user, **params):
     return Recipe.objects.create(user=user, **defaults)
 
 
-class PublicRecipesApiTests(TestCase):
+class PublicRecipesApiTests(APITestCase):
     """Test unauthorized recipe access"""
-
-    def setUp(self):
-        self.client = APIClient()
 
     def test_auth_required(self):
         """
@@ -61,11 +57,10 @@ class PublicRecipesApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateRecipesApiTests(TestCase):
+class PrivateRecipesApiTests(APITestCase):
     """Test authenticated recipe API access"""
 
     def setUp(self):
-        self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             'test@cmercado.com', 'testpass'
         )
@@ -221,9 +216,8 @@ class PrivateRecipesApiTests(TestCase):
         self.assertEqual(len(tags), 0)
 
 
-class RecipeImageUploadTests(TestCase):
+class RecipeImageUploadTests(APITestCase):
     def setUp(self):
-        self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             'test@cmercado.com', 'testpass'
         )
@@ -257,9 +251,8 @@ class RecipeImageUploadTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class RecipeFilteringTests(TestCase):
+class RecipeFilteringTests(APITestCase):
     def setUp(self):
-        self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             'test@cmercado.com', 'testpass'
         )

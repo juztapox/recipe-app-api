@@ -1,9 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from django.test import TestCase
 
 from rest_framework import status
-from rest_framework.test import APIClient
+from rest_framework.test import APITestCase
 
 from core.models import Ingredient, Recipe
 
@@ -12,11 +11,8 @@ from recipe.serializers import IngredientSerializer
 INGREDIENT_URL = reverse('recipe:ingredient-list')
 
 
-class PublicIngredientsApiTests(TestCase):
+class PublicIngredientsApiTests(APITestCase):
     """Test the publicly available ingredients api"""
-
-    def setUp(self):
-        self.client = APIClient()
 
     def test_login_required(self):
         """
@@ -27,11 +23,10 @@ class PublicIngredientsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateIngredientsApiTests(TestCase):
+class PrivateIngredientsApiTests(APITestCase):
     """Test the private ingredients api"""
 
     def setUp(self):
-        self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='test@cmercado.com', password="testpass"
         )
